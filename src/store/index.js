@@ -1,20 +1,27 @@
-import Vuex from 'vuex'
+import Vuex from '@/vuex'
 import Vue from 'vue'
 
-Vue.use(Vuex)   //挂载，调用install方法
+Vue.use(Vuex)   //挂载，调用Vuex.install方法
 
 const store = new Vuex.Store({  //创建vuex实例
-    state:{
-        name : 'zs'
+    state: {
+        age: 18
     },
-    mutations:{
-
+    mutations: {
+        setAge(state, p) {
+            state.age += p
+        }
     },
-    getters :{
-
+    getters: {
+        age(state) {
+            console.log(1);
+            return state.age + 10
+        }
     },
-    actions:{
-
+    actions: {
+        setAge({commit},val){
+            commit('setAge',val)
+        }
     },
 
 })
