@@ -65,10 +65,10 @@ const installModules = (store,rootState,path,modules)=>{
         })
     })
     modules.forEachGetters((getter,key)=>{
-        store._getters[key] =  store._getters[key] || []
-        store._getters[key].push(()=>{
-            getter.call(store,store.state)
-        }) 
+        // geteer是对象
+        store._getters[key]=()=>{
+          return  getter(store.state)
+        }
     })
     modules.forEachChildren((child,key)=>{
         installModules(store,rootState,path.concat(key),child)
@@ -76,24 +76,29 @@ const installModules = (store,rootState,path,modules)=>{
 }
 function resetStoreVm(store,state){
 
-    // 挂载getters
-    // 1. 遍历getters
+//     // 挂载getters
+//     // 1. 遍历getters
     let computed = {}
     store.getters = {}
+ 
     forEachValue( store._getters,(getter,key)=>{
         computed[key] = ()=>{
-            getter()
+          return  getter()
         }
         Object.defineProperty(store.getters,key,{
-            get : store.vm[key]
+            get: ()=>{
+             return  store.vm[key]
+            }
         })
     })
+
     store.vm = new Vue({
         data:{
-            $$store:state
+            $$state:state
         },
         computed
     })
+   
     
 }
 

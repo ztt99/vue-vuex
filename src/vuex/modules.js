@@ -13,8 +13,8 @@ export default class Modules {
         this._children[key] = children
     }
     forEachMutaions(fn){
-        if(this._row.mutaions){
-            forEachValue(this._row.mutaions,fn)
+        if(this._row.mutations){
+            forEachValue(this._row.mutations,fn)
         }
     }
     forEachActions(fn){
@@ -24,7 +24,7 @@ export default class Modules {
     }  
     forEachGetters(fn){
         if(this._row.getters){
-            forEachValue(this._row.actions,fn)
+            forEachValue(this._row.getters,fn)
         }
     }
     forEachChildren(fn){
