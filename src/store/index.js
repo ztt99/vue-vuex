@@ -14,7 +14,6 @@ const store = new Vuex.Store({  //创建vuex实例
     },
     getters: {
         age(state) {
-            console.log(1);
             return state.age + 10
         }
     },
@@ -23,6 +22,28 @@ const store = new Vuex.Store({  //创建vuex实例
             commit('setAge',val)
         }
     },
+    modules:{
+        a :{
+            state:{a:'a'},
+            modules:{
+                c:{
+                    state:{
+                        c:'c'
+                    },
+                    modules:{
+                        d:{
+                            state:{
+                                d:'d'
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        b :{
+            state:{b:'b'}
+        }
+    }
 
 })
 
