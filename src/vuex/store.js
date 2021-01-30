@@ -43,6 +43,8 @@ const installModules = (store,rootState,path,modules)=>{
      *      }
      * }
      */
+    const namespeced = store._modules.getNamespaced(path)
+    console.log(namespeced);
     // 1、 判断是否是module中的state
     if(path.length >0){
       let parent = path.slice(0,-1).reduce((memo,current)=>{
@@ -53,14 +55,14 @@ const installModules = (store,rootState,path,modules)=>{
     }
     
     modules.forEachMutaions((mutation,key)=>{
-        store._mutations[key] =  store._mutations[key] || []
-        store._mutations[key].push((payload)=>{
+        store._mutations[namespeced+key] =  store._mutations[namespeced+key] || []
+        store._mutations[namespeced+key].push((payload)=>{
             mutation.call(store,modules.state,payload)
         })
     })
     modules.forEachActions((action,key)=>{
-        store._actions[key] =  store._actions[key] || []
-        store._actions[key].push((payload)=>{
+        store._actions[namespeced+key] =  store._actions[namespeced+key] || []
+        store._actions[namespeced+key].push((payload)=>{
             action.call(store,store,payload)
         })
     })
@@ -109,9 +111,9 @@ export class Store {
         this._actions = {}
         this._getters = {}
         // 1. 格式化数据(树结构)
-        let _modules = new ModuldCollection(options)
+        this._modules = new ModuldCollection(options)
         // 2. 安装modules，根模块的状态中，要通过子模块的模块名定义在根模块上
-        installModules(this,state,[],_modules.root)
+        installModules(this,state,[],this._modules.root)
         // 2.1 将模块中的所有选项都提取到store上
         resetStoreVm(this,state)
 

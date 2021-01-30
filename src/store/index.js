@@ -18,30 +18,42 @@ const store = new Vuex.Store({  //创建vuex实例
         }
     },
     actions: {
-        setAge({commit},val){
-            commit('setAge',val)
+        setAge({ commit }, val) {
+            commit('setAge', val)
         }
     },
-    modules:{
-        a :{
-            state:{a:'a'},
-            modules:{
-                c:{
-                    state:{
-                        c:'c'
+    modules: {
+        a: {
+            namespeced: true,
+            state: { a: 'a' },
+            modules: {
+                c: {
+                    state: {
+                        c: 'c',
+                        name:'zt'
                     },
-                    modules:{
-                        d:{
-                            state:{
-                                d:'d'
+                    mutations:{
+                        setName(state,payload){
+                            state.name = payload
+                        }
+                    },
+                    modules: {
+
+                        d: {
+                            namespeced: true,
+
+                            state: {
+                                d: 'd'
                             }
                         }
                     }
                 }
             }
         },
-        b :{
-            state:{b:'b'}
+        b: {
+            namespeced: true,
+
+            state: { b: 'b' }
         }
     }
 

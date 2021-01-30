@@ -1,6 +1,9 @@
 import { forEachValue } from "./utils";
 
 export default class Modules {
+    get namespeced(){
+        return !!this._row.namespeced
+    }
     constructor(newModule){
         this._row = newModule
         this._children = {}

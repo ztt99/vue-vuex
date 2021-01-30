@@ -4,6 +4,19 @@ import Module from './modules'
 export default class ModuldCollection{
     constructor(options){
         this.register([],options)
+
+    }
+    getNamespaced(path){
+        let root = this.root
+        let moduleName = path.reduce((str,current)=>{
+            //判断当前模块中是否有namespeced
+            root = root.getModuleChildren(current)
+           if(root.namespeced){
+            str += current + '/'
+           }
+           return str
+        },'')
+        return moduleName
     }
     register(path,rootModule){
         //1. 创建格式化后的对象 
