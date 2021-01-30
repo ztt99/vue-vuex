@@ -1,6 +1,6 @@
 <template>
   <div>
-    {{this.$store.state.age}}
+    {{this.age}}
     {{this.$store.state.a.a}}
     {{this.$store.getters.age}}
     {{this.$store.state.a.c.name}}
@@ -14,13 +14,17 @@
 
 <script>
 // import Hello from './components/HelloWorld'
+import {mapState} from './vuex'
 export default {
   name:'app',
   created(){
     console.log(this.$store.state);
   },
+  computed:{
+    ...mapState(['age'])
+
+  },
   components:{
-    // Hello
   }
 }
 </script>
