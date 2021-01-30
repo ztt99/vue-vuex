@@ -20,6 +20,14 @@ function applyMixin(Vue) {
         }
     })
 }
+
+function getState(store,path){
+    // 想要找当前的新的state
+  let state = store.state //1. 找到更新的state
+  return  path.reduce((root,curretn)=>{
+      return  root[curretn]
+    },state)
+}
 /**
  * 
  * @param {*} store 实例对象
@@ -44,7 +52,6 @@ const installModules = (store,rootState,path,modules)=>{
      * }
      */
     const namespeced = store._modules.getNamespaced(path)
-    console.log(namespeced);
     // 1、 判断是否是module中的state
     if(path.length >0){
       let parent = path.slice(0,-1).reduce((memo,current)=>{
@@ -57,7 +64,10 @@ const installModules = (store,rootState,path,modules)=>{
     modules.forEachMutaions((mutation,key)=>{
         store._mutations[namespeced+key] =  store._mutations[namespeced+key] || []
         store._mutations[namespeced+key].push((payload)=>{
-            mutation.call(store,modules.state,payload)
+            mutation.call(store,getState(store,path),payload)
+            store._subscribes.forEach(fn=>{
+                fn(mutation,store.state)
+            })
         })
     })
     modules.forEachActions((action,key)=>{
@@ -69,7 +79,7 @@ const installModules = (store,rootState,path,modules)=>{
     modules.forEachGetters((getter,key)=>{
         // geteer是对象
         store._getters[key]=()=>{
-          return  getter(store.state)
+          return  getter(getState(store,path))
         }
     })
     modules.forEachChildren((child,key)=>{
@@ -110,6 +120,7 @@ export class Store {
         this._mutations = {}
         this._actions = {}
         this._getters = {}
+        this._subscribes = []
         // 1. 格式化数据(树结构)
         this._modules = new ModuldCollection(options)
         // 2. 安装modules，根模块的状态中，要通过子模块的模块名定义在根模块上
@@ -117,6 +128,17 @@ export class Store {
         // 2.1 将模块中的所有选项都提取到store上
         resetStoreVm(this,state)
 
+        //3. 全局处理插件
+        options.plugins?.forEach(plugin=>plugin(this))
+
+    }
+    replaceState(state){
+        //更新的只是get state中的state options的state并没有改变，所以installModule中的state是options的state
+        this.vm._data.$$state = state
+    }
+    // 收集
+    subscribe(fn){
+        this._subscribes.push(fn)
     }
     commit = (type,val) => {
         this._mutations[type].forEach(mutation=>{

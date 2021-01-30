@@ -2,8 +2,17 @@ import Vuex from '@/vuex'
 import Vue from 'vue'
 
 Vue.use(Vuex)   //挂载，调用Vuex.install方法
-
+function a(){
+    return function(store){
+       store.subscribe((state)=>{
+console.log(state);
+       })
+    }
+}
 const store = new Vuex.Store({  //创建vuex实例
+    plugins:[
+        a()
+    ],
     state: {
         age: 18
     },
